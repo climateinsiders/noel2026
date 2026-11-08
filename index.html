@@ -60,7 +60,10 @@ input[type="text"]:focus-visible, button:focus-visible, a:focus-visible { outlin
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s, box-shadow .15s; }
 .card.is-chosen { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
-.card.is-offered { opacity: .62; }
+.card.is-offered { background: var(--bg); }
+.card.is-offered .photo img { filter: grayscale(1); opacity: .45; }
+.card.is-offered .title, .card.is-offered .price .now, .card.is-offered .price .was { text-decoration: line-through; color: var(--muted); }
+.card.is-offered .brand, .card.is-offered .meta { opacity: .6; }
 .photo { position: relative; background: #fff; aspect-ratio: 288 / 408; }
 .photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .num { position: absolute; top: 10px; left: 10px; background: var(--ink); color: var(--bg); font-weight: 700; font-size: 12px; border-radius: 999px; padding: 3px 9px; font-variant-numeric: tabular-nums; }
@@ -176,8 +179,19 @@ footer { padding: 32px 0 8px; color: var(--muted); font-size: 13px; }
 
     <div class="actions"><button class="btn" id="paidBtn">C'est fait, j'ai payé</button></div>
 
+    <form class="pay" id="confirmForm" hidden autocomplete="off">
+      <h3>Dernière étape</h3>
+      <p>Tapez le code famille pour marquer ces cadeaux comme offerts. Ils seront barrés pour tout le monde, comme ça personne ne paie deux fois.</p>
+      <div class="row" style="border-top:0;padding-top:0">
+        <div style="display:grid;gap:4px"><label class="k" for="confirmCode">Code famille</label><input type="text" id="confirmCode" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ex. mot-mot-mot"></div>
+        <button class="btn" type="submit" id="confirmBtn">Confirmer</button>
+      </div>
+      <p class="note" id="confirmMsg" role="status"></p>
+    </form>
+
     <section class="thanks" id="thanks">
       <h3 style="margin:0">Merci, c'est adorable !</h3>
+      <p class="note" id="claimedNote" style="font-size:15px"></p>
       <p class="note" style="font-size:15px">Envoyez-moi un petit message pour que je sache quels cadeaux vous m'offrez, comme ça personne ne paie deux fois le même.</p>
       <div class="actions">
         <a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
@@ -191,6 +205,30 @@ footer { padding: 32px 0 8px; color: var(--muted); font-size: 13px; }
 // Gifts already offered: Yoann updates this list as people pay. Format: { "3": "Maman" }
 const OFFERED = {};
 const ITEMS = [{"n":1,"brand":"adidas","title":"T-shirt de sport Workout Essentials","color":"Noir","size":"Taille L","price":20.95,"was":22.95,"img":"https://img01.ztat.net/article/spp-media-p1/448bba6ea8d24999b9ca706e334c45c2/57be841f136a4f918ca37954dffadc46.jpg?imwidth=400"},{"n":2,"brand":"adidas","title":"Short Essentials Chelsea","color":"Noir et blanc","size":"Taille L","price":23.85,"was":27.95,"img":"https://img01.ztat.net/article/spp-media-p1/cf92c135c51847cc9c9efb5c843928dd/2929dc00dcc44abbba5bad131a227bd0.jpg?imwidth=400"},{"n":3,"brand":"Nike","title":"T-shirt Dri-FIT Crew","color":"Bleu indigo","size":"Taille L","price":29.95,"was":32.95,"img":"https://img01.ztat.net/article/spp-media-p1/ec03b143f55f4154a5a00cb33a079389/1262745301c84335aebba45082a56720.jpg?imwidth=400"},{"n":4,"brand":"Nike","title":"T-shirt Flex","color":"Noir","size":"Taille L","price":33.95,"was":37.95,"img":"https://img01.ztat.net/article/spp-media-p1/47f537a169464e8d9ce2e9005741408b/b068c83456014e03989eea14919bad0a.jpg?imwidth=400"},{"n":5,"brand":"Nike","title":"Short Flex","color":"Noir","size":"Taille L","price":33.95,"was":37.95,"img":"https://img01.ztat.net/article/spp-media-p1/300f320ce20a4969a5d6e85131d5de81/422699fbb6c643629b33ae5e5c3671d5.jpg?imwidth=400"},{"n":6,"brand":"Nike","title":"Chaussettes de sport, lot de 6","color":"Blanc","size":"Pointure 43-46","price":29.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/10d76e6d9b0e4aaea223d573d0fd7f0b/e457e18da4794e5ba05afaee5ce60692.jpg?imwidth=400"},{"n":7,"brand":"New Balance","title":"Chaussettes de sport, lot de 6","color":"Blanc","size":"Pointure 43-46","price":20.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/7dc96a7be5e64a5f8f98ce0957a94fe6/c4eecf349fce4c70a220d3fed16f43d6.jpg?imwidth=400"},{"n":8,"brand":"Pier One Sport","title":"Débardeur Quick Dry","color":"Noir","size":"Taille L","price":17.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/da9d63d83fd7424a90145f5ba3f1db1b/ecd703f898e84117809ed317b9ef6263.jpg?imwidth=400"},{"n":9,"brand":"Under Armour","title":"T-shirt Tech 2.0","color":"Noir et graphite","size":"Taille L","price":23.85,"was":27.95,"img":"https://img01.ztat.net/article/spp-media-p1/6e6d7d71bea33d7389b6c9a6b0544349/1053756b57b644f8b93d6998cb123327.jpg?imwidth=400"},{"n":10,"brand":"Under Armour","title":"T-shirt de compression HeatGear, x2","color":"Noir","size":"Taille L","price":53.9,"was":59.9,"img":"https://img01.ztat.net/article/spp-media-p1/0ea32fe807123c189dd68568a0997c9a/a440282682124dba9d2c7d4a74b54e85.jpg?imwidth=400"},{"n":11,"brand":"Under Armour","title":"Haut manches longues HeatGear","color":"Noir","size":"Taille L","price":29.85,"was":34.95,"img":"https://img01.ztat.net/article/spp-media-p1/e2051c1603e94c7bbfb42c6e2568cbca/b4ab1ccc3dad4370b3731f07b24beba2.jpg?imwidth=400"}];
+
+
+// Shared "already offered" state: read from a small Supabase table, written only through a function that checks the family code.
+const PAGE = 'famille';
+const API = 'https://jyiqrmnsabnppicfcsdd.supabase.co';
+const KEY = 'sb_publishable_oe-f2MQbf2xDd5N76ESojg_z1umfUYT';
+const LOCAL_KEY = 'noel-claimed-' + PAGE;
+try { Object.assign(OFFERED, JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}')); } catch (e) {}
+async function loadClaims() {
+  try {
+    const r = await fetch(`${API}/rest/v1/noel_claims?select=item,giver&page=eq.${PAGE}`, { headers: { apikey: KEY } });
+    if (!r.ok) return;
+    const rows = await r.json();
+    rows.forEach(x => { OFFERED[String(x.item)] = x.giver; chosen.delete(x.item); });
+    render();
+  } catch (e) {}
+}
+async function claim(code, items, who) {
+  const r = await fetch(`${API}/rest/v1/rpc/noel_claim`, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_code: code, p_page: PAGE, p_items: items, p_giver: who }) });
+  if (r.ok) return { ok: true, rows: await r.json() };
+  let msg = ''; try { msg = (await r.json()).message || ''; } catch (e) {}
+  return { ok: false, badCode: msg.includes('bad_code'), status: r.status };
+}
 
 const fmt = n => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 const chosen = new Set();
@@ -251,6 +289,9 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
   document.getElementById('refV').textContent = reference();
   document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(message());
   document.getElementById('thanks').classList.remove('show');
+  document.getElementById('paidBtn').hidden = false;
+  document.getElementById('confirmForm').hidden = true;
+  document.getElementById('confirmMsg').textContent = '';
   overlay.classList.add('open');
   document.getElementById('closeBtn').focus();
 });
@@ -258,10 +299,45 @@ document.getElementById('closeBtn').addEventListener('click', () => overlay.clas
 overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
 document.getElementById('paidBtn').addEventListener('click', () => {
-  document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(message());
+  const unlockedCode = BANK ? document.getElementById('famCode').value : '';
+  if (unlockedCode) { document.getElementById('confirmCode').value = unlockedCode; finishClaim(); return; }
+  const f = document.getElementById('confirmForm'); f.hidden = false;
+  document.getElementById('confirmCode').focus();
+  f.scrollIntoView({ block: 'nearest' });
+});
+document.getElementById('confirmForm').addEventListener('submit', e => { e.preventDefault(); finishClaim(); });
+async function finishClaim() {
+  const msg = document.getElementById('confirmMsg');
+  const items = selection().map(i => i.n);
+  const who = giver.value.trim() || 'Famille';
+  const text = message();
+  if (!items.length) return;
+  msg.textContent = 'Enregistrement…';
+  let res;
+  try { res = await claim(document.getElementById('confirmCode').value, items, who); } catch (err) { res = { ok: false, network: true }; }
+  if (!res.ok && res.badCode) { msg.textContent = 'Code incorrect. Vérifiez le message de Yoann.'; return; }
+  if (res.ok) {
+    res.rows.forEach(x => { OFFERED[String(x.item)] = x.giver; });
+    const lost = items.filter(n => OFFERED[String(n)] && OFFERED[String(n)] !== who);
+    document.getElementById('claimedNote').textContent = lost.length
+      ? `Attention : ${lost.map(n => '#' + n).join(' ')} venait d'être offert par quelqu'un d'autre. Prévenez Yoann pour qu'il vous rembourse la différence.`
+      : 'Vos cadeaux sont maintenant barrés pour tout le monde.';
+  } else {
+    items.forEach(n => { OFFERED[String(n)] = who; });
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(OFFERED)); } catch (e) {}
+    document.getElementById('claimedNote').textContent = 'Envoyez bien le message à Yoann pour qu\u2019il barre vos cadeaux.';
+  }
+  msg.textContent = '';
+  document.getElementById('confirmForm').hidden = true;
+  document.getElementById('paidBtn').hidden = true;
+  document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(text);
+  LAST_MESSAGE = text;
+  chosen.clear();
+  render();
   document.getElementById('thanks').classList.add('show');
   document.getElementById('thanks').scrollIntoView({ block: 'nearest' });
-});
+}
+let LAST_MESSAGE = '';
 
 // Bank details are stored encrypted (AES-GCM, key derived from the family code). Nothing readable is in this file.
 const SEALED = {"s":"mmfEjg8bWAlDo7/L9SCv5g==","i":"Ff+HKpkLaWaK8tYq","c":"iBadszKFAGAE2ZDVBHJCm/sj5e4WAbs0Gw/vqTa6+F0Fr662dJCaqPJC9wpShYfzyJfEvXq4P5Hk6mgIdmnAfDgMxdcj4gu6bKwQeu/CPgeOjogT78Ol7VRReAyN9aZgS50JN3VGxZi7WqCtzDlW4jnK/zdIq7Pd3CLJzzWSwUlyvrEkXVhVreHTtsuk3r5w/hvqYskipgAcPJZtpdvlopP9TZM="};
@@ -296,7 +372,7 @@ const COPY = {
   iban: () => BANK ? BANK.iban.replace(/\s/g, '') : '',
   bic: () => BANK ? BANK.bic : '',
   ref: () => reference(),
-  message: () => message()
+  message: () => LAST_MESSAGE || message()
 };
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-copy]');
@@ -308,6 +384,9 @@ document.addEventListener('click', async e => {
 });
 
 render();
+loadClaims();
+setInterval(loadClaims, 30000);
+window.addEventListener('focus', loadClaims);
 </script>
 </body>
 </html>
