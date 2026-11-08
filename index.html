@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>La liste de Noël de Yoann</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* Layout: a shop-style grid of numbered gift cards, with a basket bar that opens an in-page checkout. */
+:root {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --ink: #17221c;
+  --muted: #5d6b63;
+  --line: #dde3de;
+  --accent: #1f5c3f;
+  --accent-ink: #ffffff;
+  --gold: #b8862f;
+  --sale: #b2352a;
+  --chosen: #e7f1ea;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1612; --surface: #172019; --ink: #e9efe9; --muted: #9fb0a5; --line: #2a362e;
+    --accent: #4fae7f; --accent-ink: #08130d; --gold: #d9a94f; --sale: #ef7b6f; --chosen: #1d3326;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1612; --surface: #172019; --ink: #e9efe9; --muted: #9fb0a5; --line: #2a362e;
+  --accent: #4fae7f; --accent-ink: #08130d; --gold: #d9a94f; --sale: #ef7b6f; --chosen: #1d3326;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; padding-bottom: 110px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+header { padding: 40px 0 24px; display: grid; gap: 14px; }
+.kicker { color: var(--gold); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(32px, 6vw, 52px); line-height: 1.05; margin: 0; text-wrap: balance; }
+.intro { max-width: 62ch; color: var(--muted); margin: 0; }
+.how { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 0; padding: 0; list-style: none; }
+.how li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.how b { color: var(--accent); }
+.summary { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; padding: 16px 0 20px; border-top: 1px solid var(--line); }
+.summary .stat { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 15px; }
+.summary .stat strong { color: var(--ink); font-size: 18px; }
+.name-field { display: grid; gap: 4px; }
+.name-field label { font-size: 13px; color: var(--muted); }
+input[type="text"] { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-width: 220px; }
+input[type="text"]:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s, box-shadow .15s; }
+.card.is-chosen { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+.card.is-offered { opacity: .62; }
+.photo { position: relative; background: #fff; aspect-ratio: 288 / 408; }
+.photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.num { position: absolute; top: 10px; left: 10px; background: var(--ink); color: var(--bg); font-weight: 700; font-size: 12px; border-radius: 999px; padding: 3px 9px; font-variant-numeric: tabular-nums; }
+.badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: #1a1205; font-weight: 700; font-size: 12px; border-radius: 999px; padding: 3px 9px; }
+.body { padding: 14px 16px 16px; display: grid; gap: 6px; flex: 1; }
+.brand { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.title { font-weight: 500; line-height: 1.3; }
+.meta { font-size: 14px; color: var(--muted); }
+.price { display: flex; gap: 8px; align-items: baseline; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.price .now { font-weight: 700; font-size: 18px; }
+.price .now.sale { color: var(--sale); }
+.price .was { color: var(--muted); text-decoration: line-through; font-size: 14px; }
+.pick { margin-top: auto; font: inherit; font-weight: 700; border-radius: 10px; padding: 10px 12px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; }
+.pick:hover { background: var(--chosen); }
+.card.is-chosen .pick { background: var(--accent); color: var(--accent-ink); }
+.pick[disabled] { border-color: var(--line); color: var(--muted); cursor: default; background: transparent; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(0,0,0,.08); }
+.bar .wrap { display: flex; gap: 14px; align-items: center; justify-content: space-between; padding-top: 14px; padding-bottom: 14px; }
+.bar .total { font-variant-numeric: tabular-nums; }
+.bar .total strong { font-size: 20px; }
+.btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 12px 18px; background: var(--accent); color: var(--accent-ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.overlay { position: fixed; inset: 0; background: rgba(8,14,10,.55); display: none; align-items: flex-end; justify-content: center; padding: 16px; z-index: 10; }
+.overlay.open { display: flex; }
+@media (min-width: 700px) { .overlay { align-items: center; } }
+.sheet { background: var(--surface); color: var(--ink); border-radius: 18px; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; padding: 22px; display: grid; gap: 18px; }
+.sheet h2 { font-family: var(--font-display); margin: 0; font-size: 26px; }
+.lines { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.lines li { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; font-size: 15px; }
+.lines img { width: 44px; height: 62px; object-fit: contain; background: #fff; border-radius: 6px; border: 1px solid var(--line); }
+.lines .amt { font-variant-numeric: tabular-nums; font-weight: 700; }
+.grand { display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 12px; font-size: 18px; font-variant-numeric: tabular-nums; }
+.pay { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+.pay h3 { margin: 0; font-size: 17px; }
+.pay p { margin: 0; color: var(--muted); font-size: 14px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; border-top: 1px dashed var(--line); padding-top: 8px; }
+.row .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.row .v { font-weight: 500; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.copy { font: inherit; font-size: 13px; font-weight: 700; border: 1px solid var(--line); background: transparent; color: var(--accent); border-radius: 8px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.thanks { display: none; gap: 12px; }
+.thanks.show { display: grid; }
+.note { font-size: 13px; color: var(--muted); }
+footer { padding: 32px 0 8px; color: var(--muted); font-size: 13px; }
+@media (max-width: 420px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .body { padding: 12px; } .title { font-size: 14px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Noël 2026</div>
+    <h1>La liste de Noël de Yoann</h1>
+    <p class="intro">Cette année je vous simplifie la vie : j'ai choisi mes affaires de sport sur Zalando, avec les bonnes tailles et les bonnes couleurs, et je les commande moi-même. Vous choisissez ce que vous m'offrez, et vous me remboursez quand vous voulez.</p>
+    <ul class="how">
+      <li><b>1.</b> Choisissez un ou plusieurs cadeaux</li>
+      <li><b>2.</b> Passez au paiement</li>
+      <li><b>3.</b> Payez par Revolut, carte ou virement</li>
+    </ul>
+  </header>
+  <div class="summary">
+    <div class="name-field">
+      <label for="giver">Votre prénom</label>
+      <input type="text" id="giver" placeholder="ex. Maman" autocomplete="given-name">
+    </div>
+    <div class="stat" id="stat"></div>
+  </div>
+  <main class="grid" id="grid" aria-label="Cadeaux"></main>
+  <footer>Tous les articles viennent de Zalando, taille L et pointure 43-46. Prix réels du panier au 8 novembre 2026.</footer>
+</div>
+
+<div class="bar" role="region" aria-label="Votre panier">
+  <div class="wrap">
+    <div class="total" id="barTotal">Aucun cadeau choisi</div>
+    <button class="btn" id="checkoutBtn" disabled>Passer au paiement</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <h2 id="sheetTitle">Votre cadeau pour Yoann</h2>
+      <button class="copy" id="closeBtn" aria-label="Fermer">Fermer</button>
+    </div>
+    <ul class="lines" id="lines"></ul>
+    <div class="grand"><span>Total à me rembourser</span><strong id="grand"></strong></div>
+
+    <section class="pay">
+      <h3>Option 1 · Revolut ou carte bancaire</h3>
+      <p>Le lien ouvre ma page Revolut. Si vous n'avez pas Revolut, vous pouvez payer par carte ou Apple Pay. Saisissez le montant ci-dessous.</p>
+      <div class="row"><div><div class="k">Montant à saisir</div><div class="v" id="amtV"></div></div><button class="copy" data-copy="amount">Copier</button></div>
+      <div class="actions"><a class="btn" href="https://revolut.me/yberno" target="_blank" rel="noopener">Payer sur revolut.me/yberno</a></div>
+    </section>
+
+    <section class="pay">
+      <h3>Option 2 · Virement bancaire</h3>
+      <p>Depuis n'importe quelle banque, en euros. Pour protéger mes coordonnées, elles s'affichent avec le code famille que je vous ai envoyé.</p>
+      <form id="unlockForm" class="row" style="border-top:0;padding-top:0" autocomplete="off">
+        <div style="display:grid;gap:4px"><label class="k" for="famCode">Code famille</label><input type="text" id="famCode" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ex. mot-mot-mot"></div>
+        <button class="copy" type="submit" id="unlockBtn">Afficher</button>
+      </form>
+      <p class="note" id="unlockMsg" role="status"></p>
+      <div id="bankRows" hidden>
+        <div class="row"><div><div class="k">Bénéficiaire</div><div class="v" id="bName"></div></div><button class="copy" data-copy="name">Copier</button></div>
+        <div class="row"><div><div class="k">IBAN</div><div class="v" id="bIban"></div></div><button class="copy" data-copy="iban">Copier</button></div>
+        <div class="row"><div><div class="k">BIC</div><div class="v" id="bBic"></div></div><button class="copy" data-copy="bic">Copier</button></div>
+        <div class="row"><div><div class="k">Montant</div><div class="v" id="amtV2"></div></div><button class="copy" data-copy="amount">Copier</button></div>
+        <div class="row"><div><div class="k">Référence</div><div class="v" id="refV"></div></div><button class="copy" data-copy="ref">Copier</button></div>
+        <p class="note" id="bBank"></p>
+      </div>
+    </section>
+
+    <div class="actions"><button class="btn" id="paidBtn">C'est fait, j'ai payé</button></div>
+
+    <section class="thanks" id="thanks">
+      <h3 style="margin:0">Merci, c'est adorable !</h3>
+      <p class="note" style="font-size:15px">Envoyez-moi un petit message pour que je sache quels cadeaux vous m'offrez, comme ça personne ne paie deux fois le même.</p>
+      <div class="actions">
+        <a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
+        <button class="btn ghost" data-copy="message">Copier le message</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+// Gifts already offered: Yoann updates this list as people pay. Format: { "3": "Maman" }
+const OFFERED = {};
+const ITEMS = [{"n":1,"brand":"adidas","title":"T-shirt de sport Workout Essentials","color":"Noir","size":"Taille L","price":20.95,"was":22.95,"img":"https://img01.ztat.net/article/spp-media-p1/448bba6ea8d24999b9ca706e334c45c2/57be841f136a4f918ca37954dffadc46.jpg?imwidth=400"},{"n":2,"brand":"adidas","title":"Short Essentials Chelsea","color":"Noir et blanc","size":"Taille L","price":23.85,"was":27.95,"img":"https://img01.ztat.net/article/spp-media-p1/cf92c135c51847cc9c9efb5c843928dd/2929dc00dcc44abbba5bad131a227bd0.jpg?imwidth=400"},{"n":3,"brand":"Nike","title":"T-shirt Dri-FIT Crew","color":"Bleu indigo","size":"Taille L","price":29.95,"was":32.95,"img":"https://img01.ztat.net/article/spp-media-p1/ec03b143f55f4154a5a00cb33a079389/1262745301c84335aebba45082a56720.jpg?imwidth=400"},{"n":4,"brand":"Nike","title":"T-shirt Flex","color":"Noir","size":"Taille L","price":33.95,"was":37.95,"img":"https://img01.ztat.net/article/spp-media-p1/47f537a169464e8d9ce2e9005741408b/b068c83456014e03989eea14919bad0a.jpg?imwidth=400"},{"n":5,"brand":"Nike","title":"Short Flex","color":"Noir","size":"Taille L","price":33.95,"was":37.95,"img":"https://img01.ztat.net/article/spp-media-p1/300f320ce20a4969a5d6e85131d5de81/422699fbb6c643629b33ae5e5c3671d5.jpg?imwidth=400"},{"n":6,"brand":"Nike","title":"Chaussettes de sport, lot de 6","color":"Blanc","size":"Pointure 43-46","price":29.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/10d76e6d9b0e4aaea223d573d0fd7f0b/e457e18da4794e5ba05afaee5ce60692.jpg?imwidth=400"},{"n":7,"brand":"New Balance","title":"Chaussettes de sport, lot de 6","color":"Blanc","size":"Pointure 43-46","price":20.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/7dc96a7be5e64a5f8f98ce0957a94fe6/c4eecf349fce4c70a220d3fed16f43d6.jpg?imwidth=400"},{"n":8,"brand":"Pier One Sport","title":"Débardeur Quick Dry","color":"Noir","size":"Taille L","price":17.95,"was":null,"img":"https://img01.ztat.net/article/spp-media-p1/da9d63d83fd7424a90145f5ba3f1db1b/ecd703f898e84117809ed317b9ef6263.jpg?imwidth=400"},{"n":9,"brand":"Under Armour","title":"T-shirt Tech 2.0","color":"Noir et graphite","size":"Taille L","price":23.85,"was":27.95,"img":"https://img01.ztat.net/article/spp-media-p1/6e6d7d71bea33d7389b6c9a6b0544349/1053756b57b644f8b93d6998cb123327.jpg?imwidth=400"},{"n":10,"brand":"Under Armour","title":"T-shirt de compression HeatGear, x2","color":"Noir","size":"Taille L","price":53.9,"was":59.9,"img":"https://img01.ztat.net/article/spp-media-p1/0ea32fe807123c189dd68568a0997c9a/a440282682124dba9d2c7d4a74b54e85.jpg?imwidth=400"},{"n":11,"brand":"Under Armour","title":"Haut manches longues HeatGear","color":"Noir","size":"Taille L","price":29.85,"was":34.95,"img":"https://img01.ztat.net/article/spp-media-p1/e2051c1603e94c7bbfb42c6e2568cbca/b4ab1ccc3dad4370b3731f07b24beba2.jpg?imwidth=400"}];
+
+const fmt = n => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+const chosen = new Set();
+const grid = document.getElementById('grid');
+const giver = document.getElementById('giver');
+try { giver.value = localStorage.getItem('noel-giver') || ''; } catch (e) {}
+giver.addEventListener('input', () => { try { localStorage.setItem('noel-giver', giver.value.trim()); } catch (e) {} });
+
+function render() {
+  grid.innerHTML = '';
+  ITEMS.forEach(it => {
+    const offeredBy = OFFERED[String(it.n)];
+    const isChosen = chosen.has(it.n);
+    const card = document.createElement('article');
+    card.className = 'card' + (isChosen ? ' is-chosen' : '') + (offeredBy ? ' is-offered' : '');
+    card.innerHTML = `
+      <div class="photo"><img loading="lazy" src="${it.img}" alt="${it.brand} ${it.title}">
+        <span class="num">#${it.n}</span>
+        ${offeredBy ? `<span class="badge">Offert par ${offeredBy}</span>` : ''}</div>
+      <div class="body">
+        <div class="brand">${it.brand}</div>
+        <div class="title">${it.title}</div>
+        <div class="meta">${it.color} · ${it.size}</div>
+        <div class="price"><span class="now${it.was ? ' sale' : ''}">${fmt(it.price)}</span>${it.was ? `<span class="was">${fmt(it.was)}</span>` : ''}</div>
+        <button class="pick" id="pick-${it.n}" ${offeredBy ? 'disabled' : ''}>${offeredBy ? 'Déjà offert' : (isChosen ? 'Choisi ✓' : 'J’offre ce cadeau')}</button>
+      </div>`;
+    if (!offeredBy) card.querySelector('.pick').addEventListener('click', () => { isChosen ? chosen.delete(it.n) : chosen.add(it.n); render(); });
+    grid.appendChild(card);
+  });
+  const free = ITEMS.filter(i => !OFFERED[String(i.n)]);
+  const totalAll = ITEMS.reduce((s, i) => s + i.price, 0);
+  document.getElementById('stat').innerHTML = `<strong>${ITEMS.length - free.length} / ${ITEMS.length}</strong> cadeaux déjà offerts · reste ${fmt(free.reduce((s, i) => s + i.price, 0))} sur ${fmt(totalAll)}`;
+  const sel = ITEMS.filter(i => chosen.has(i.n));
+  const sum = sel.reduce((s, i) => s + i.price, 0);
+  document.getElementById('barTotal').innerHTML = sel.length ? `${sel.length} cadeau${sel.length > 1 ? 'x' : ''} · <strong>${fmt(sum)}</strong>` : 'Aucun cadeau choisi';
+  document.getElementById('checkoutBtn').disabled = !sel.length;
+}
+
+function selection() { return ITEMS.filter(i => chosen.has(i.n)); }
+function amount() { return selection().reduce((s, i) => s + i.price, 0); }
+function reference() {
+  const who = giver.value.trim() || 'Famille';
+  return `Noel Yoann - ${who} - ` + selection().map(i => '#' + i.n).join(' ');
+}
+function message() {
+  const who = giver.value.trim();
+  return `Coucou Yoann${who ? ', c’est ' + who : ''} ! Je t'offre : ` + selection().map(i => `#${i.n} ${i.brand} ${i.title}`).join(', ') + `. Total ${fmt(amount())}, c'est payé.`;
+}
+
+const overlay = document.getElementById('overlay');
+document.getElementById('checkoutBtn').addEventListener('click', () => {
+  const sel = selection();
+  document.getElementById('lines').innerHTML = sel.map(i => `<li><img src="${i.img}" alt=""><span>#${i.n} ${i.brand} · ${i.title}</span><span class="amt">${fmt(i.price)}</span></li>`).join('');
+  const a = fmt(amount());
+  document.getElementById('grand').textContent = a;
+  document.getElementById('amtV').textContent = a;
+  document.getElementById('amtV2').textContent = a;
+  document.getElementById('refV').textContent = reference();
+  document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(message());
+  document.getElementById('thanks').classList.remove('show');
+  overlay.classList.add('open');
+  document.getElementById('closeBtn').focus();
+});
+document.getElementById('closeBtn').addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+document.getElementById('paidBtn').addEventListener('click', () => {
+  document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(message());
+  document.getElementById('thanks').classList.add('show');
+  document.getElementById('thanks').scrollIntoView({ block: 'nearest' });
+});
+
+// Bank details are stored encrypted (AES-GCM, key derived from the family code). Nothing readable is in this file.
+const SEALED = {"s":"mmfEjg8bWAlDo7/L9SCv5g==","i":"Ff+HKpkLaWaK8tYq","c":"iBadszKFAGAE2ZDVBHJCm/sj5e4WAbs0Gw/vqTa6+F0Fr662dJCaqPJC9wpShYfzyJfEvXq4P5Hk6mgIdmnAfDgMxdcj4gu6bKwQeu/CPgeOjogT78Ol7VRReAyN9aZgS50JN3VGxZi7WqCtzDlW4jnK/zdIq7Pd3CLJzzWSwUlyvrEkXVhVreHTtsuk3r5w/hvqYskipgAcPJZtpdvlopP9TZM="};
+let BANK = null;
+const b64 = s => Uint8Array.from(atob(s), ch => ch.charCodeAt(0));
+async function unseal(code) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code.trim().toLowerCase()), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(SEALED.s), iterations: 600000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(SEALED.i) }, key, b64(SEALED.c));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+function showBank() {
+  document.getElementById('bName').textContent = BANK.name;
+  document.getElementById('bIban').textContent = BANK.iban;
+  document.getElementById('bBic').textContent = BANK.bic;
+  document.getElementById('bBank').textContent = 'Banque : ' + BANK.bank;
+  document.getElementById('bankRows').hidden = false;
+  document.getElementById('unlockForm').hidden = true;
+  document.getElementById('unlockMsg').textContent = '';
+}
+document.getElementById('unlockForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg = document.getElementById('unlockMsg');
+  msg.textContent = 'Vérification…';
+  try { BANK = await unseal(document.getElementById('famCode').value); showBank(); }
+  catch (err) { msg.textContent = 'Code incorrect. Vérifiez le message de Yoann, ou payez avec Revolut ou carte (option 1).'; }
+});
+
+const COPY = {
+  amount: () => amount().toFixed(2).replace('.', ','),
+  name: () => BANK ? BANK.name : '',
+  iban: () => BANK ? BANK.iban.replace(/\s/g, '') : '',
+  bic: () => BANK ? BANK.bic : '',
+  ref: () => reference(),
+  message: () => message()
+};
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-copy]');
+  if (!b) return;
+  const label = b.textContent;
+  try { await navigator.clipboard.writeText(COPY[b.dataset.copy]()); b.textContent = 'Copié ✓'; }
+  catch (err) { b.textContent = 'Sélectionnez le texte'; }
+  setTimeout(() => { b.textContent = label; }, 1600);
+});
+
+render();
+</script>
+</body>
+</html>
